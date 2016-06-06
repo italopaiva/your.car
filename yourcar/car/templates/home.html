@@ -1,13 +1,56 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load bootstrap_ui_tags %}
 
 {% block page-content %}
 
-  <center>
-    <h1> 
+<center>
+{% row %}
+  {% column %}
+    <h1>
       <p> <i class="fa fa-car"></i> </p>
-      {% trans 'Welcome to' %} <strong>your.car</strong>!
+      {% trans 'Welcome to' %} <strong>your.car</strong>!<br>
+      <i><small>{% trans 'Keep track of your.car'%}!</small></i>
     </h1>
-  </center>
+  {% endcolumn %}
+{% endrow %}
+</center>
+
+<br>
+<br>
+<br>
+<br>
+
+{% row %}
+  {% column xs="4" %}
+    <h3>
+      <p align="center"><i class="fa fa-tint"></i></p>
+      <i>{% trans 'Keep track on your.car oil changes' %}</i>
+    </h3>
+    <h4><p class="text-justify">
+      {% trans "Remember the last oil change you've made is though. No need for that anymore! With your.car once you've made an oil change, just register here the date and the car mileage and we'll tell you when is time to another change." %}
+    </p></h4>
+  {% endcolumn %}
+
+  {% column xs="4"%}
+    <h3>
+      <p align="center"><i class="fa fa-dollar"></i></p>
+      <i>{% trans 'Keep track of expenses with gas' %}</i>
+    </h3>
+    <h4><p class="text-justify">
+      {% trans "Everybody knows that gas is not cheap, so does not worth losses with that. With your.car you can track how much gas your car is spending and how much money you're spending along with it. If your.car is not economic anymore we'll let you know!" %}
+    </p></h4>
+  {% endcolumn %}
+
+  {% column xs="4"%}
+    <h3>
+      <p align="center"><i class="fa fa-tag"></i></p>
+      <i>{% trans 'Keep track of ---something---' %}</i>
+    </h3>
+    <h4><p class="text-justify">
+      Lorem ipsum dolor sit amet, lorem putant laoreet duo et, qui delectus percipit definitionem ea. Ex duis debitis invenire cum, quod voluptua interpretaris vim an. His ne detraxit pericula. Assum impetus sit te. Exerci docendi nam in. Amet utinam epicurei an eos, ea duo idque aeque aperiri.
+    </p></h4>
+  {% endcolumn %}
+{% endrow %}
 
 {% endblock %}

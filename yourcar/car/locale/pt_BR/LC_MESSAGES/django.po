@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-05 21:07-0300\n"
+"POT-Creation-Date: 2016-06-05 22:09-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,22 +18,62 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: car/templates/base.html:28
+#: car/templates/base.html:33
 msgid "Oil changes"
 msgstr "Trocas de óleo"
 
-#: car/templates/base.html:29
+#: car/templates/base.html:34
 msgid "Refuels"
 msgstr "Abastecimentos"
 
-#: car/templates/base.html:33
+#: car/templates/base.html:38
 msgid "Search something"
 msgstr "Pesquise algo"
 
-#: car/templates/base.html:35
+#: car/templates/base.html:40
 msgid "Search"
 msgstr "Pesquisar"
 
-#: car/templates/home.html:8
+#: car/templates/home.html:12
 msgid "Welcome to"
 msgstr "Bem-vindo ao"
+
+#: car/templates/home.html:13
+msgid "Keep track of your.car"
+msgstr "Mantenha o controle do seu carro"
+
+#: car/templates/home.html:28
+msgid "Keep track on your.car oil changes"
+msgstr "Controle as trocas de óleo"
+
+#: car/templates/home.html:31
+msgid ""
+"Remember the last oil change you've made is though. No need for that "
+"anymore! With your.car once you've made an oil change, just register here "
+"the date and the car mileage and we'll tell you when is time to another "
+"change."
+msgstr ""
+"Lembrar da última troca de óleo feita não é fácil. Mas isso não é necessário "
+"mais! Com your.car, uma vez que você tenha feito uma troca de óleo, apenas "
+"registre aqui a data e quilometragem do carro que nós te avisamos quando "
+"precisar trocar novamente."
+
+#: car/templates/home.html:38
+msgid "Keep track of expenses with gas"
+msgstr "Controle gastos com combustível"
+
+#: car/templates/home.html:41
+msgid ""
+"Everybody knows that gas is not cheap, so does not worth losses with that. "
+"With your.car you can track how much gas your car is spending and how much "
+"money you're spending along with it. If your.car is not economic anymore "
+"we'll let you know!"
+msgstr ""
+"Todo mundo sabe que combustível está caro, então não vale a pena ter "
+"prejuízos com isso. Com your.var você pode manter os registros de quanto o "
+"seu carro está gastando com combustível e quanto você acaba gastando com "
+"isso. Se o seu carro não for mais econômico como era, nós te avisamos!"
+
+#: car/templates/home.html:48
+msgid "Keep track of ---something---"
+msgstr ""

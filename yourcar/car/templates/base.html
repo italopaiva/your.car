@@ -1,5 +1,10 @@
 {% extends "bootstrap_ui/bootstrap-skeleton.html" %}
 {% load i18n %}
+{% load bootstrap_ui_tags %}
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
 
 {% block head-meta %}
   {{ block.super }}
@@ -38,7 +43,9 @@
     </div>
   </nav>
 
-  {% block page-content %}
-  {% endblock %}
+  {% container %}
+    {% block page-content %}
+    {% endblock %}
+  {% endcontainer %}
 
 {% endblock %}
