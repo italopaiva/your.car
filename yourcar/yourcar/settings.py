@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap_ui',
+    'car',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -104,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt_BR'
 
 TIME_ZONE = 'UTC'
 
@@ -119,3 +121,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Your.car settings
+YOUR_CAR_HOME = 'car'
+
+# Bootstrap theme
+DJANGO_BOOTSTRAP_UI_THEME = 'bootswatch-cosmo'
