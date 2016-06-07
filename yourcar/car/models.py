@@ -3,24 +3,59 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from django.core import validators
 
 class Car(models.Model):
-    car_model = models.CharField(max_length=20)
-    color = models.CharField(max_length=20)
+    car_model = models.CharField(
+        _("Car model"),
+        max_length=20,
+        validators=[
+            validators.RegexValidator(
+                r'^[a-zA-Z0-9\s+]+$',
+                _('Car model must have only alphanumeric characters')
+            )
+        ]
+    )
+    color = models.CharField(
+        _("Car color"),
+        max_length=20,
+        validators=[
+            validators.RegexValidator(
+                r'^[a-zA-Z\s+]+$',
+                _('Car color must have only alphabetical characters')
+            )
+        ]
+    )
     year = models.SmallIntegerField(
+        _("Car year"),
         help_text=_('Use year as YYYY.'),
         validators=[validators.RegexValidator(
             r'^[0-9]{4}$',
-            _('Year in invalid format!'),
-            'invalid'
+            _('Year in invalid format!')
         )]
     )
     mileage = models.IntegerField(
+        _("Car mileage"),
         default=0,
         validators=[validators.MinValueValidator(0)],
-        help_text=_("Or your car is brand new or it have some mileage traveled")
+        help_text=_("Set here your car mileage at the moment.")
+    )
+    name = models.CharField(
+        _("Car name"),
+        max_length=20,
+        validators=[
+            validators.RegexValidator(
+                r'^[a-zA-Z0-9\s+]+$',
+                _('Car name must have only alphanumeric characters')
+            )
+        ],
+        help_text=_("Do you name your car? We like it! Tell us the name of your.car."),
+        blank=True
     )
 
     def __str__(self):
-        return self.car_model + "/" + self.year
+        if self.name is None:
+            car_name = self.car_model + "/" + self.year
+        else:
+            car_name = self.name
+        return car_name
 
 class OilChange(models.Model):
     car = models.ForeignKey(Car, on_delete=models.CASCADE)

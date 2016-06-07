@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-05 22:09-0300\n"
+"POT-Creation-Date: 2016-06-07 01:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,70 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: car/models.py:7
+msgid "Car model"
+msgstr "Modelo do seu carro"
+
+#: car/models.py:12
+msgid "Car model must have only alphanumeric characters"
+msgstr "O modelo do carro deve conter apenas caracteres alfanuméricos."
+
+#: car/models.py:17
+msgid "Car color"
+msgstr "Cor do seu carro"
+
+#: car/models.py:22
+msgid "Car color must have only alphabetical characters"
+msgstr "A cor do carro deve conter apenas caracteres alfabéticos."
+
+#: car/models.py:27
+msgid "Car year"
+msgstr "Ano do seu carro"
+
+#: car/models.py:28
+msgid "Use year as YYYY."
+msgstr "Informe o ano como YYYY."
+
+#: car/models.py:31
+msgid "Year in invalid format!"
+msgstr "O formato do ano deve ser YYYY."
+
+#: car/models.py:35
+msgid "Car mileage"
+msgstr "Quilometragem do seu carro"
+
+#: car/models.py:38
+msgid "Set here your car mileage at the moment."
+msgstr "Informe aqui a quilometragem atual do seu carro."
+
+#: car/models.py:41
+msgid "Car name"
+msgstr "Nome do seu carro"
+
+#: car/models.py:46
+msgid "Car name must have only alphanumeric characters"
+msgstr "O nome do carro deve conter apenas caracteres alfanuméricos."
+
+#: car/models.py:49
+msgid "Do you name your car? We like it! Tell us the name of your.car."
+msgstr "Você dá nome para o seu carro? Nós adoramos isso!"
+
+#: car/models.py:65 car/models.py:67
+msgid "Regular gas"
+msgstr "Gasolina comum"
+
+#: car/models.py:68
+msgid "Premium gas"
+msgstr "Gasolina aditivada"
+
+#: car/models.py:69
+msgid "Alcohol"
+msgstr "Álcool"
+
+#: car/models.py:70
+msgid "Diesel"
+msgstr "Diesel"
 
 #: car/templates/base.html:33
 msgid "Oil changes"
@@ -34,19 +98,31 @@ msgstr "Pesquise algo"
 msgid "Search"
 msgstr "Pesquisar"
 
-#: car/templates/home.html:12
+#: car/templates/home.html:13
 msgid "Welcome to"
 msgstr "Bem-vindo ao"
 
-#: car/templates/home.html:13
+#: car/templates/home.html:14
 msgid "Keep track of your.car"
 msgstr "Mantenha o controle do seu carro"
 
-#: car/templates/home.html:28
+#: car/templates/home.html:30
+msgid "GET STARTED!"
+msgstr "COMEÇAR!"
+
+#: car/templates/home.html:43
+msgid "Tell us your car info..."
+msgstr "Conte-nos os dados do seu carro..."
+
+#: car/templates/home.html:51
+msgid "Save car"
+msgstr "Pronto!"
+
+#: car/templates/home.html:66
 msgid "Keep track on your.car oil changes"
 msgstr "Controle as trocas de óleo"
 
-#: car/templates/home.html:31
+#: car/templates/home.html:69
 msgid ""
 "Remember the last oil change you've made is though. No need for that "
 "anymore! With your.car once you've made an oil change, just register here "
@@ -58,11 +134,11 @@ msgstr ""
 "registre aqui a data e quilometragem do carro que nós te avisamos quando "
 "precisar trocar novamente."
 
-#: car/templates/home.html:38
+#: car/templates/home.html:76
 msgid "Keep track of expenses with gas"
 msgstr "Controle gastos com combustível"
 
-#: car/templates/home.html:41
+#: car/templates/home.html:79
 msgid ""
 "Everybody knows that gas is not cheap, so does not worth losses with that. "
 "With your.car you can track how much gas your car is spending and how much "
@@ -74,6 +150,6 @@ msgstr ""
 "seu carro está gastando com combustível e quanto você acaba gastando com "
 "isso. Se o seu carro não for mais econômico como era, nós te avisamos!"
 
-#: car/templates/home.html:48
+#: car/templates/home.html:86
 msgid "Keep track of ---something---"
 msgstr ""

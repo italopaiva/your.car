@@ -1,0 +1,14 @@
+{% extends "home.html" %}
+
+{% block page-content %}
+	{{ block.super }}
+{% endblock %}
+
+{% block body-javascript %}
+	{{ block.super }}
+    <script>
+    	$(document).ready(function(){
+    		$("#get_started_form").modal('show');
+    	});
+    </script>
+{% endblock %}
