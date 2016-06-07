@@ -63,3 +63,6 @@ target/
 
 # yourcar virtualenv
 /your.car/
+
+# yourcar database
+db.sqlite3

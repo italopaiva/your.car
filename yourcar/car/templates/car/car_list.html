@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load bootstrap_ui_tags %}
+{% load i18n %}
+
+{% block page-content %}
+
+<h1 align="center">{% trans 'Your.cars' %}</h1>
+<br>
+<br>
+
+{% row %}
+  {% for car in cars %}
+    {% column xs="6" md="6" sm="4"%}
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title text-center"><b>{{ car }}<b></h3>
+      </div>
+
+      <div class="panel-body">
+        * Trocas de óleo<br>
+        * Abastecimento
+      </div>
+    </div>
+    {% endcolumn %}
+  {% endfor %}
+{% endrow %}
+
+{% endblock %}

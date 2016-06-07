@@ -51,8 +51,8 @@ class Car(models.Model):
     )
 
     def __str__(self):
-        if self.name is None:
-            car_name = self.car_model + "/" + self.year
+        if not self.name:
+            car_name = self.car_model + "/" + str(self.year)
         else:
             car_name = self.name
         return car_name
