@@ -1,0 +1,24 @@
+{% load i18n %}
+{% load bootstrap3 %}
+{% load bootstrap_ui_tags %}
+
+<!-- Create a new car form -->
+<div id="new_car_form" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h3 class="text-center modal-title">{% trans 'Tell us your car info...' %}</h3>
+      </div>
+      <form method="post" action="{% url 'new_car' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          {% bootstrap_form form %}
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success btn-lg btn-block">{% trans 'Save car' %}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
