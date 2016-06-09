@@ -31,15 +31,20 @@
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
           <li><a href="{% url 'cars' %}">{% trans 'My cars' %}<span class="sr-only">(current)</span></a></li>
-          {# <li><a href="#">{% trans 'Oil changes' %}<span class="sr-only">(current)</span></a></li> #}
-          {# <li><a href="#">{% trans 'Refuels' %}</a></li> #}
         </ul>
-        <form class="navbar-form navbar-right" role="search">
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="{% trans 'Search something'%}...">
-          </div>
-          <button type="submit" class="btn btn-default">{% trans 'Search' %}</button>
-        </form>
+
+        {% if not user.is_authenticated %}
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url 'login' %}">{% trans 'Login' %}</a></li>
+          </ul>
+        {% else %}
+          <ul class="nav navbar-nav navbar-right">
+            <li><h3><span class="label label-default">{% trans 'Hello'%}, {{ user.username }}!</span></h3></li>
+            <li><a href="{% url 'logout' %}">{% trans 'Logout' %}</a></li>
+          </ul>        
+        {% endif %}
+
+
       </div>
     </div>
   </nav>

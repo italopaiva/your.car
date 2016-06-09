@@ -1,6 +1,12 @@
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.core import validators
+# from django.contrib.auth.models import User
+
+
+# class UserProfile(models.Model):
+#     user = models.OneToOneField(User)
+
 
 class Car(models.Model):
     car_model = models.CharField(

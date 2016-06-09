@@ -1,0 +1,40 @@
+{% extends "home.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load bootstrap_ui_tags %}
+
+{% block page-content %}
+{{ block.super }}
+
+<div id="login_form" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h3 class="text-center modal-title">{% trans 'Login...' %}</h3>
+      </div>
+      <form method="post" action="{% url 'login'%}">
+        {% csrf_token %}
+        <div class="modal-body">
+          {% bootstrap_form form %}
+          <a href="{% url 'signup' %}">{% trans 'Does not have an account? Signup!'%}</a>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success btn-lg btn-block">{% trans 'Login' %}</button>
+        </div>
+
+        <input type="hidden" name="next" value="{% url 'home' %}" />
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block body-javascript %}
+  {{ block.super }}
+    <script>
+      $(document).ready(function(){
+        $("#login_form").modal('show');
+      });
+    </script>
+{% endblock %}

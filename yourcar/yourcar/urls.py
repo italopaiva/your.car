@@ -16,10 +16,15 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.views.generic import RedirectView
+from car import views as car_views
 
 urlpatterns = [
-    url(r'^$', RedirectView.as_view(url=settings.YOUR_CAR_HOME)),
+    url(r'^$', RedirectView.as_view(url=settings.YOUR_CAR_HOME), name='home'),
     url(r'^admin/', admin.site.urls),
+    url(r'^login', auth_views.login, {'template_name': 'login.html'}, "login"),
+    url(r'^logout', auth_views.logout, {'next_page': 'home'}, "logout"),
+    url(r'^signup', car_views.SignUpView.as_view(), name="signup"),
     url(r'^car/', include('car.urls')),
 ]

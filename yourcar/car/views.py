@@ -3,7 +3,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.views.generic import View
 from django.template.response import TemplateResponse
-from car.forms import CreateCarForm
+from django.contrib.auth.models import User
+from car.forms import CreateCarForm, NewUserForm
 from car.models import Car
 
 def home(request):
@@ -11,6 +12,26 @@ def home(request):
         'form': CreateCarForm()
     }
     return TemplateResponse(request, "home.html", context)
+
+class SignUpView(View):
+
+    form = NewUserForm
+
+    def get(self, request):
+        context = {'form': self.form()}
+        return TemplateResponse(request, "signup.html", context)
+
+    def post(self, request):
+
+        form = self.form(data=request.POST)
+
+        if form.is_valid():
+            user = User.objects.create_user(username=request.POST['username'], password=request.POST['password'])
+            response = HttpResponseRedirect(reverse('login'))
+        else:
+            context = {'form': form}
+            response = TemplateResponse(request, "signup.html", context)
+        return response
 
 class NewCarView(View):
     
