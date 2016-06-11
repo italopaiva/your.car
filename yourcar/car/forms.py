@@ -9,6 +9,7 @@ class CreateCarForm(forms.ModelForm):
     class Meta:
         model = Car
         fields = '__all__'
+        exclude = ['owner']
 
 
 

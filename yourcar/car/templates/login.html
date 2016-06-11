@@ -23,7 +23,7 @@
           <button class="btn btn-success btn-lg btn-block">{% trans 'Login' %}</button>
         </div>
 
-        <input type="hidden" name="next" value="{% url 'home' %}" />
+        <input type="hidden" name="next" value="{{ next }}" />
       </form>
     </div>
   </div>

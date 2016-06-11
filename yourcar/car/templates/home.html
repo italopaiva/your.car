@@ -3,6 +3,16 @@
 {% load bootstrap3 %}
 {% load bootstrap_ui_tags %}
 
+{% block flash-messages %}
+  {{ block.super }}
+  {% if user.is_authenticated %}
+    <div class="alert alert-dismissible alert-info">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <h4><p align="center"><strong> {% trans 'Welcome' %}, {{ user.username }}!</strong></p></h4>
+    </div>
+  {% endif %}
+{% endblock %}
+
 {% block page-content %}
 
 <center>

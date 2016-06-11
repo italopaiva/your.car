@@ -123,9 +123,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
-# Your.car settings
 YOUR_CAR_HOME = 'car'
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = '/car'
+
+# Overriding ERROR message level to be compatible with bootstrap level
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+}
 
 # Bootstrap theme
 DJANGO_BOOTSTRAP_UI_THEME = 'bootswatch-cosmo'
