@@ -148,6 +148,7 @@ def cars(request):
 def refuels(request, car_id):
     car = Car.objects.get(pk=car_id)
     refuels = Refuel.objects.filter(car=car_id)
+
     context = {'refuels': refuels, 'car': car}
     return TemplateResponse(request, "car/car_refuels.html", context)
 

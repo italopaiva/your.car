@@ -11,7 +11,7 @@
 {% row %}
   {% for car in cars %}
     {% column xs="6" md="6" sm="4"%}
-    <div class="panel panel-info">
+    <div class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title text-center"><b>{{ car }}<b></h3>
       </div>
@@ -28,6 +28,20 @@
             </a>
           </div>
         {% endrow %}
+        
+        <br>
+          
+        {% row %}
+        <center>
+          {% column md="2"%}
+            <h4><span class="label label-warning">{% trans 'Refuels' %}</span></h4>
+          {% endcolumn%}
+          {% column md="10"%}
+              <h4>{% trans 'You already spent $' %} {{car.refuel_expense}} {% trans 'with refuels in' %} {{ car }}.</h4>
+          {% endcolumn%}
+        </center>
+        {% endrow %}
+
       </div>
     </div>
     {% endcolumn %}

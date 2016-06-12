@@ -52,6 +52,15 @@ class Car(models.Model):
         blank=True
     )
 
+    def calculate_refuel_expense(self):
+        refuels = Refuel.objects.filter(car=self)
+        total_refuel_expense = 0
+        for refuel in refuels:
+            total_refuel_expense += refuel.total
+        return total_refuel_expense
+
+    refuel_expense = property(calculate_refuel_expense)
+
     def __str__(self):
         if not self.name:
             car_name = self.car_model + "/" + str(self.year)
@@ -89,6 +98,11 @@ class Refuel(models.Model):
         choices=FUEL_TYPES,
         default=REGULAR_GAS
     )
+
+    def get_total(self):
+        return self.liters*self.fuel_price
+
+    total = property(get_total)
 
     def __str__(self):
         return _("Refuel") + " " + str(self.date) + " - " + str(self.mileage) + " Km"

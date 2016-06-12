@@ -20,6 +20,7 @@
           <th>{% trans 'Car mileage' %}</th>
           <th>{% trans 'Liters' %}</th>
           <th>{% trans 'Fuel price' %}</th>
+          <th>{% trans 'Total' %}</th>
           <th>{% trans 'Fuel type' %}</th>
           <th>{% trans 'Actions' %}</th>
         </tr>
@@ -31,6 +32,7 @@
             <td>{{ refuel.mileage }} Km</td>
             <td>{{ refuel.liters }}</td>
             <td>{{ refuel.fuel_price }}</td>
+            <td>{{ refuel.total }}</td>
             <td>{{ refuel.fuel_type }}</td>
             <td>
               <button type="button" class="btn btn-danger" data-toggle="modal" 
