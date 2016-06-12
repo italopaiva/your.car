@@ -61,7 +61,7 @@ class Car(models.Model):
 
 class OilChange(models.Model):
     car = models.ForeignKey(Car, on_delete=models.CASCADE)
-    date = models.DateTimeField('date changed')
+    date = models.DateField('date changed')
     mileage = models.IntegerField(
         default=0,
         validators=[validators.MinValueValidator(0)]
@@ -77,9 +77,9 @@ class Refuel(models.Model):
     )
 
     car = models.ForeignKey(Car, on_delete=models.CASCADE)
-    date = models.DateTimeField('date refueled')
-    liters = models.DecimalField(max_digits=7, decimal_places=3)
-    fuel_price = models.DecimalField(max_digits=4, decimal_places=2)
+    date = models.DateField('date refueled')
+    liters = models.DecimalField(max_digits=7, decimal_places=3, validators=[validators.MinValueValidator(0)])
+    fuel_price = models.DecimalField(max_digits=4, decimal_places=2, validators=[validators.MinValueValidator(0)])
     mileage = models.IntegerField(
         default=0,
         validators=[validators.MinValueValidator(0)]

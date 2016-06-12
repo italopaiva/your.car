@@ -8,8 +8,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext, ugettext_lazy as _
-from car.forms import CreateCarForm, NewUserForm
-from car.models import Car
+from car.forms import CreateCarForm, NewUserForm, NewRefuelForm
+from car.models import Car, Refuel, OilChange
 
 def home(request):
     context = {
@@ -61,8 +61,48 @@ class NewCarView(View):
 
         return response
 
+class NewRefuelView(View):
+    
+    form = NewRefuelForm
+
+    @method_decorator(login_required)
+    def get(self, request, car_id):
+        car = Car.objects.get(pk=car_id)
+        context = {'form': self.form(), 'car': car}
+        return TemplateResponse(request, "car/new_refuel.html", context)
+
+    @method_decorator(login_required)
+    def post(self, request, car_id):
+        car = Car.objects.get(pk=car_id)
+        refuel = Refuel(car=car)
+        form = self.form(data=request.POST, instance=refuel)
+        if form.is_valid():
+            form.save()
+            response = HttpResponseRedirect(reverse('car_refuels', kwargs={'car_id': car_id}))
+            msg_level = messages.SUCCESS
+            msg = _('Your refuel was successfuly saved!')
+        else:
+            context = {'form': form, 'car': car}
+            response = TemplateResponse(request, "car/new_refuel.html", context)
+            msg_level = messages.ERROR
+            msg = _('Something is wrong. Please, check the data you\'ve informed.')
+
+        messages.add_message(request, msg_level, msg)
+        return response
+
 @login_required
 def cars(request):
     cars = Car.objects.all()
     context = {'cars': cars}
     return TemplateResponse(request, "car/car_list.html", context)
+
+@login_required
+def refuels(request, car_id):
+    car = Car.objects.get(pk=car_id)
+    refuels = Refuel.objects.filter(car=car_id)
+    context = {'refuels': refuels, 'car': car}
+    return TemplateResponse(request, "car/car_refuels.html", context)
+
+@login_required
+def oil_changes(request, car_id):
+    pass

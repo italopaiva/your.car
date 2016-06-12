@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load bootstrap_ui_tags %}
+
+{% block head-css %}
+  {{ block.super}}
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+{% endblock %}
+
+{% block page-content %}
+  
+  <h1 align="center">{%trans 'New refuel for' %} {{ car }}</h1>
+  <br>
+  <br>
+  <form method="post" action="{% url 'new_refuel' car.pk %}">
+    {% csrf_token %}
+    {% row %}
+      {% column md="4"%}
+      {% endcolumn %}
+      {% column md="4"%}
+        {% bootstrap_form form %}
+      {% endcolumn %}
+    {% endrow %}
+    {% row %}
+      {% column md="4"%}
+      {% endcolumn %}
+      {% column md="4"%}
+        <button class="btn btn-success btn-lg btn-block">{% trans 'Save refuel' %}</button>
+      {% endcolumn %}
+    {% endrow %}
+  </form>
+
+{% endblock %}
+
+{% block body-javascript %}
+  {{ block.super }}
+
+  {# Add jQuery UI #}
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+  <script>
+  $(document).ready(function() {
+      $('.datepicker').datepicker();
+  });
+  </script>
+{% endblock%}

@@ -17,8 +17,17 @@
       </div>
 
       <div class="panel-body">
-        * Trocas de óleo<br>
-        * Abastecimento
+        {% row %}
+          <div class="btn-group btn-group-justified">
+
+            <a href="{% url 'car_refuels' car.pk %}" class="btn btn-warning">
+              <h4><span class="label label-warning">{% trans 'Refuels'%}</span></h4>
+            </a>
+            <a href="{% url 'car_oil_changes' car.pk %}" class="btn btn-default">
+              <h4><span class="label label-default">{% trans 'Oil changes'%}</span></h4>
+            </a>
+          </div>
+        {% endrow %}
       </div>
     </div>
     {% endcolumn %}
