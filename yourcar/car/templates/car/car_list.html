@@ -9,43 +9,59 @@
 <br>
 
 {% row %}
-  {% for car in cars %}
-    {% column xs="6" md="6" sm="4"%}
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title text-center"><b>{{ car }}<b></h3>
-      </div>
+  {% if cars %}
+    {% for car in cars %}
+      {% column xs="6" md="6" sm="4"%}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title text-center"><b>{{ car }}<b></h3>
+        </div>
 
-      <div class="panel-body">
-        {% row %}
-          <div class="btn-group btn-group-justified">
+        <div class="panel-body">
+          {% row %}
+            <div class="btn-group btn-group-justified">
 
-            <a href="{% url 'car_refuels' car.pk %}" class="btn btn-warning">
-              <h4><span class="label label-warning">{% trans 'Refuels'%}</span></h4>
-            </a>
-            <a href="{% url 'car_oil_changes' car.pk %}" class="btn btn-default">
-              <h4><span class="label label-default">{% trans 'Oil changes'%}</span></h4>
-            </a>
-          </div>
-        {% endrow %}
-        
-        <br>
+              <a href="{% url 'car_refuels' car.pk %}" class="btn btn-warning">
+                <h4><span class="label label-warning">{% trans 'Refuels'%}</span></h4>
+              </a>
+              <a href="{% url 'car_oil_changes' car.pk %}" class="btn btn-default">
+                <h4><span class="label label-default">{% trans 'Oil changes'%}</span></h4>
+              </a>
+            </div>
+          {% endrow %}
           
-        {% row %}
-        <center>
-          {% column md="2"%}
-            <h4><span class="label label-warning">{% trans 'Refuels' %}</span></h4>
-          {% endcolumn%}
-          {% column md="10"%}
-              <h4>{% trans 'You already spent $' %} {{car.refuel_expense}} {% trans 'with refuels in' %} {{ car }}.</h4>
-          {% endcolumn%}
-        </center>
-        {% endrow %}
+          <br>
+            
+          {% row %}
+          <center>
+            {% column md="2"%}
+              <h4><span class="label label-warning">{% trans 'Refuels' %}</span></h4>
+            {% endcolumn%}
+            {% column md="10"%}
+                <h4>{% trans 'You already spent $' %} {{car.refuel_expense}} {% trans 'with refuels in' %} {{ car }}.</h4>
+            {% endcolumn%}
+          </center>
+          {% endrow %}
 
+        </div>
       </div>
+      {% endcolumn %}
+    {% endfor %}
+  {% else %}
+    <div class="alert alert-dismissible alert-info">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <h4><p align="center"><strong> {% trans 'You have no cars registered at the moment.' %}</strong></p></h4>
+      <p align="center">
+        <button type="button" class="btn btn-warning btn-lg" 
+                data-toggle="modal" data-target="#new_car_form">
+          {% trans 'Create one here' %} !
+        </button>
+      </p>
     </div>
-    {% endcolumn %}
-  {% endfor %}
+
+    {% include "car/new_car_form.html" with form=form %}
+
+  {% endif %}
 {% endrow %}
 
 {% endblock %}

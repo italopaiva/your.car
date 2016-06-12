@@ -49,7 +49,7 @@
 {% endrow %}
 
 {% if user.is_authenticated %}
-  {% include "car/new_car.html" with form=form %}
+  {% include "car/new_car_form.html" with form=form first_contact=True %}
 {% endif %}
 
 <br>

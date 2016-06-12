@@ -12,6 +12,9 @@
       </div>
       <form method="post" action="{% url 'new_car' %}">
         {% csrf_token %}
+        {% if first_contact %}
+          <input type="hidden" id="first_contact" name="first_contact" value="1" />
+        {% endif %}
         <div class="modal-body">
           {% bootstrap_form form %}
         </div>

@@ -57,7 +57,17 @@ class NewCarView(View):
             messages.add_message(request, msg_level, msg)
         else:
             context = {'form': form}
-            response = TemplateResponse(request, "car/new_car_get_started.html", context)
+
+            first_contact = request.POST.get('first_contact')
+            if not first_contact:
+                template = "car/car_list.html"
+            else:
+                template = "car/new_car_get_started.html"
+
+            msg_level = messages.ERROR
+            msg = _('You have some problems on your car info. Please, correct these trying to create it again.')
+            messages.add_message(request, msg_level, msg)
+            response = TemplateResponse(request, template, context)
 
         return response
 
@@ -94,6 +104,7 @@ class NewRefuelView(View):
 class DeleteRefuelView(View):
     http_method_names = [u'post']
 
+    @method_decorator(login_required)
     def post(self, request, refuel_id):
         refuel = Refuel.objects.get(pk=refuel_id)
         if refuel.car.owner == request.user:
@@ -110,6 +121,7 @@ class UpdateRefuelView(View):
 
     form = NewRefuelForm
 
+    @method_decorator(login_required)
     def get(self, request, refuel_id):
         refuel = Refuel.objects.get(pk=refuel_id)
         if refuel.car.owner == request.user:
@@ -119,6 +131,7 @@ class UpdateRefuelView(View):
         else:
             raise Http404
 
+    @method_decorator(login_required)
     def post(self, request, refuel_id):
         refuel = Refuel.objects.get(pk=refuel_id)
         if refuel.car.owner == request.user:
@@ -140,15 +153,14 @@ class UpdateRefuelView(View):
 
 @login_required
 def cars(request):
-    cars = Car.objects.all()
-    context = {'cars': cars}
+    cars = Car.objects.filter(owner=request.user)
+    context = {'cars': cars, 'form': CreateCarForm()}
     return TemplateResponse(request, "car/car_list.html", context)
 
 @login_required
 def refuels(request, car_id):
     car = Car.objects.get(pk=car_id)
     refuels = Refuel.objects.filter(car=car_id)
-
     context = {'refuels': refuels, 'car': car}
     return TemplateResponse(request, "car/car_refuels.html", context)
 
