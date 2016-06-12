@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic import View
 from django.template.response import TemplateResponse
 from django.contrib import messages
@@ -89,6 +89,23 @@ class NewRefuelView(View):
 
         messages.add_message(request, msg_level, msg)
         return response
+
+
+class DeleteRefuelView(View):
+    http_method_names = [u'post']
+
+    def post(self, request, refuel_id):
+        refuel = Refuel.objects.get(pk=refuel_id)
+        refuel_car = refuel.car
+        if refuel.car.owner == request.user:
+            refuel.delete()
+            messages.add_message(request, messages.SUCCESS, _("Refuel delete successfuly!"))
+            response = HttpResponseRedirect(reverse('car_refuels', 
+                                            kwargs={'car_id': refuel_car.pk}))
+            return response
+        else:
+            raise Http404
+
 
 @login_required
 def cars(request):

@@ -89,3 +89,6 @@ class Refuel(models.Model):
         choices=FUEL_TYPES,
         default=REGULAR_GAS
     )
+
+    def __str__(self):
+        return _("Refuel") + " " + str(self.date) + " - " + str(self.mileage) + " Km"

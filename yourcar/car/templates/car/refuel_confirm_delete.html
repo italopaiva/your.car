@@ -1,0 +1,18 @@
+{% load i18n %}
+
+<div id="confirm_refuel_delete_form_{{refuel.pk}}" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h3 class="text-center modal-title">{% trans 'Delete refuel' %}</h3>
+      </div>
+      <div class="alert alert-danger">
+        <form action="{% url 'delete_refuel' refuel.pk %}" method="post">{% csrf_token %}
+          <h4 align="center"><strong>{% trans 'Are you sure you want to delete' %} "{{ refuel }}"?</strong></h4>
+          <input class="btn btn-danger btn-lg btn-block" type="submit" value="{% trans 'Confirm' %}" />
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
