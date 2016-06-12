@@ -10,10 +10,16 @@
 
 {% block page-content %}
   
-  <h1 align="center">{%trans 'New refuel for' %} {{ car }}</h1>
+  <h1 align="center">
+    {% block formtitle %}{%trans 'New refuel for' %} {{ car }}{% endblock %}
+  </h1>
   <br>
   <br>
+
+  {% block form-declaration %}
   <form method="post" action="{% url 'new_refuel' car.pk %}">
+  {% endblock %}
+
     {% csrf_token %}
     {% row %}
       {% column md="4"%}

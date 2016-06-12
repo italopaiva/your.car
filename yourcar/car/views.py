@@ -69,7 +69,7 @@ class NewRefuelView(View):
     def get(self, request, car_id):
         car = Car.objects.get(pk=car_id)
         context = {'form': self.form(), 'car': car}
-        return TemplateResponse(request, "car/new_refuel.html", context)
+        return TemplateResponse(request, "refuel/new_refuel.html", context)
 
     @method_decorator(login_required)
     def post(self, request, car_id):
@@ -83,7 +83,7 @@ class NewRefuelView(View):
             msg = _('Your refuel was successfuly saved!')
         else:
             context = {'form': form, 'car': car}
-            response = TemplateResponse(request, "car/new_refuel.html", context)
+            response = TemplateResponse(request, "refuel/new_refuel.html", context)
             msg_level = messages.ERROR
             msg = _('Something is wrong. Please, check the data you\'ve informed.')
 
@@ -96,16 +96,47 @@ class DeleteRefuelView(View):
 
     def post(self, request, refuel_id):
         refuel = Refuel.objects.get(pk=refuel_id)
-        refuel_car = refuel.car
         if refuel.car.owner == request.user:
+            refuel_car = refuel.car
             refuel.delete()
-            messages.add_message(request, messages.SUCCESS, _("Refuel delete successfuly!"))
+            messages.add_message(request, messages.SUCCESS, _("Refuel deleted successfuly!"))
             response = HttpResponseRedirect(reverse('car_refuels', 
                                             kwargs={'car_id': refuel_car.pk}))
             return response
         else:
             raise Http404
 
+class UpdateRefuelView(View):
+
+    form = NewRefuelForm
+
+    def get(self, request, refuel_id):
+        refuel = Refuel.objects.get(pk=refuel_id)
+        if refuel.car.owner == request.user:
+            form = self.form(instance=refuel)
+            context = {'form': form, 'refuel': refuel, 'car': refuel.car}
+            return TemplateResponse(request, "refuel/edit_refuel.html", context)
+        else:
+            raise Http404
+
+    def post(self, request, refuel_id):
+        refuel = Refuel.objects.get(pk=refuel_id)
+        if refuel.car.owner == request.user:
+            form = self.form(data=request.POST, instance=refuel)
+            if form.is_valid():
+                form.save()
+                response = HttpResponseRedirect(reverse('car_refuels', kwargs={'car_id': refuel.car.pk}))
+                msg_level = messages.SUCCESS
+                msg = _('Refuel updated with success!')
+            else:
+                msg_level = messages.ERROR
+                msg = _('Something is wrong. Please, check the data you\'ve informed.')
+                context = {'form': form, 'refuel': refuel, 'car': refuel.car}
+                response = TemplateResponse(request, "refuel/edit_refuel.html", context)
+            messages.add_message(request, msg_level, msg)
+            return response
+        else:
+            raise Http404
 
 @login_required
 def cars(request):

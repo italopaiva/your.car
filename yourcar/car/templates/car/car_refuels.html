@@ -37,7 +37,12 @@
                       data-target="#confirm_refuel_delete_form_{{refuel.pk}}">              
                 {% trans 'Delete refuel' %}
               </button>
-              {% include 'car/refuel_confirm_delete.html' with refuel=refuel %}
+              {% include 'refuel/refuel_confirm_delete.html' with refuel=refuel %}
+
+              <a href="{% url 'edit_refuel' refuel.pk %}" class="btn btn-info">              
+                {% trans 'Edit refuel' %}
+              </a>
+
             </td>
           </tr>
         {% endfor %}
