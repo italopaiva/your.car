@@ -121,3 +121,187 @@ class YourCarViewsTestCase(TestCase):
         self.assertEqual(response.status_code, self.RESPONSE_OK)
         self.assertIn(_('Please enter a correct username and password. Note that both fields may be case-sensitive.'), str(response.content))
 
+    def test_new_car_view_post(self):
+
+        # Log in with user1
+        logged = self.client.login(username=self.user1.username, password=self.user1_password)
+
+        url_to_test = reverse('new_car')
+
+        post_data = {
+            'owner': self.user1.pk,
+            'car_model': "Fusca",
+            'color': "Preto",
+            'year': "2014",
+            'mileage': "300000",
+            'name': "Fuscao preto"
+        }
+
+        response = self.client.post(url_to_test, post_data, follow=True)
+        self.assertEqual(response.status_code, self.RESPONSE_OK)
+
+        try:
+            car = Car.objects.get(owner=self.user1.pk, name="Fuscao preto")
+        except:
+            car = False
+        self.assertNotEqual(False, car)
+
+    def test_new_car_view_post_with_invalid_car_model(self):
+
+        # Log in with user1
+        logged = self.client.login(username=self.user1.username, password=self.user1_password)
+
+        url_to_test = reverse('new_car')
+
+        post_data = {
+            'owner': self.user1.pk,
+            'car_model': "Fusca*&$%", # Invalid car_model
+            'color': "Preto",
+            'year': "2014",
+            'mileage': "300000",
+            'name': "Fuscao preto"
+        }
+
+        response = self.client.post(url_to_test, post_data, follow=True)
+        self.assertEqual(response.status_code, self.RESPONSE_OK)
+
+        self.assertFormError(response, 'form', 'car_model', [_('Car model must have only alphanumeric characters')])
+
+        try:
+            car = Car.objects.get(owner=self.user1.pk, name="Fuscao preto")
+        except:
+            car = False
+        self.assertEqual(False, car)
+
+    def test_new_car_view_post_with_invalid_color(self):
+
+        # Log in with user1
+        logged = self.client.login(username=self.user1.username, password=self.user1_password)
+
+        url_to_test = reverse('new_car')
+
+        post_data = {
+            'owner': self.user1.pk,
+            'car_model': "Fusca",
+            'color': "Preto43423", # Invalid color name
+            'year': "2014",
+            'mileage': "300000",
+            'name': "Fuscao preto"
+        }
+
+        response = self.client.post(url_to_test, post_data, follow=True)
+        self.assertEqual(response.status_code, self.RESPONSE_OK)
+
+        self.assertFormError(response, 'form', 'color', [_('Car color must have only alphabetical characters')])
+
+        try:
+            car = Car.objects.get(owner=self.user1.pk, name="Fuscao preto")
+        except:
+            car = False
+        self.assertEqual(False, car)
+
+    def test_new_car_view_post_with_invalid_year(self):
+
+        # Log in with user1
+        logged = self.client.login(username=self.user1.username, password=self.user1_password)
+
+        url_to_test = reverse('new_car')
+
+        post_data = {
+            'owner': self.user1.pk,
+            'car_model': "Fusca",
+            'color': "Preto43423",
+            'year': "204564", # Invalid year
+            'mileage': "300000",
+            'name': "Fuscao preto"
+        }
+
+        response = self.client.post(url_to_test, post_data, follow=True)
+        self.assertEqual(response.status_code, self.RESPONSE_OK)
+
+        self.assertFormError(response, 'form', 'year', [_('Enter a whole number.')])
+
+        try:
+            car = Car.objects.get(owner=self.user1.pk, name="Fuscao preto")
+        except:
+            car = False
+        self.assertEqual(False, car)
+
+    def test_new_car_view_post_with_invalid_mileage(self):
+
+        # Log in with user1
+        logged = self.client.login(username=self.user1.username, password=self.user1_password)
+
+        url_to_test = reverse('new_car')
+
+        post_data = {
+            'owner': self.user1.pk,
+            'car_model': "Fusca",
+            'color': "Preto43423",
+            'year': "204564",
+            'mileage': "-1", # Invalid mileage
+            'name': "Fuscao preto"
+        }
+
+        response = self.client.post(url_to_test, post_data, follow=True)
+        self.assertEqual(response.status_code, self.RESPONSE_OK)
+
+        self.assertFormError(response, 'form', 'mileage', [_('Ensure this value is greater than or equal to 0.')])
+
+        try:
+            car = Car.objects.get(owner=self.user1.pk, name="Fuscao preto")
+        except:
+            car = False
+        self.assertEqual(False, car)
+
+    def test_new_car_view_post_with_invalid_name(self):
+
+        # Log in with user1
+        logged = self.client.login(username=self.user1.username, password=self.user1_password)
+
+        url_to_test = reverse('new_car')
+
+        post_data = {
+            'owner': self.user1.pk,
+            'car_model': "Fusca",
+            'color': "Preto43423",
+            'year': "204564",
+            'mileage': "-1",
+            'name': "Fuscao76&&*(*&" # Invalid name
+        }
+
+        response = self.client.post(url_to_test, post_data, follow=True)
+        self.assertEqual(response.status_code, self.RESPONSE_OK)
+
+        self.assertFormError(response, 'form', 'name', [_('Car name must have only alphanumeric characters')])
+
+        try:
+            car = Car.objects.get(owner=self.user1.pk, name="Fuscao preto")
+        except:
+            car = False
+        self.assertEqual(False, car)
+
+    def test_new_car_view_post_with_valid_blank_name(self):
+
+        # Log in with user1
+        logged = self.client.login(username=self.user1.username, password=self.user1_password)
+
+        url_to_test = reverse('new_car')
+
+        post_data = {
+            'owner': self.user1.pk,
+            'car_model': "Fusca",
+            'color': "Preto",
+            'year': "2014",
+            'mileage': "30000",
+            'name': "" # Valid blank name
+        }
+
+        response = self.client.post(url_to_test, post_data, follow=True)
+        self.assertEqual(response.status_code, self.RESPONSE_OK)
+
+        try:
+            car = Car.objects.get(owner=self.user1.pk, color='Preto')
+        except:
+            car = False
+        self.assertNotEqual(False, car)
