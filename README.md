@@ -20,3 +20,13 @@ Your.car relies on Django 1.9.6, Django Bootstrap-3 and Django Bootstrap-UI. So,
 * 3 - Install Bootstrap-UI:
 
 `pip install django-bootstrap-ui`
+
+* 4 - Make the migrations and apply them:
+
+`python manage.py makemigrations`
+
+`python manage.py migrate`
+
+* 5 - Start the server:
+
+`python manage.py runserver`
