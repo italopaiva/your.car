@@ -10,6 +10,10 @@ class YourCarViewsTestCase(TestCase):
 
     RESPONSE_OK = 200
 
+    def setUp(self):
+        self.user1_password = 'chuck'
+        self.user1 = User.objects.create_user(username='Chuck', password=self.user1_password)
+
     def test_signup_get_view(self):
         """ Test if the signup view respond correctly when using GET method """
 
@@ -84,3 +88,36 @@ class YourCarViewsTestCase(TestCase):
         except:
             user = False
         self.assertEqual(user, False)
+
+    def test_login_get(self):
+        url_to_test = reverse('login')
+        response = self.client.get(url_to_test)
+        self.assertEqual(response.status_code, self.RESPONSE_OK)
+
+    def test_login_with_valid_user(self):
+        
+        url_to_test = reverse('login')
+
+        post_data = {
+            'username': self.user1.username,
+            'password': self.user1_password
+        }
+        
+        response = self.client.post(url_to_test, post_data, follow=True)
+        self.assertEqual(response.status_code, self.RESPONSE_OK)
+
+        self.assertIn(str(_('Welcome')+', '+self.user1.username+"!"), str(response.content))
+
+    def test_login_with_invalid_user(self):
+        
+        url_to_test = reverse('login')
+
+        post_data = {
+            'username': 'userthatdoesnotexists',
+            'password': 'password'
+        }
+        
+        response = self.client.post(url_to_test, post_data, follow=True)
+        self.assertEqual(response.status_code, self.RESPONSE_OK)
+        self.assertIn(_('Please enter a correct username and password. Note that both fields may be case-sensitive.'), str(response.content))
+
