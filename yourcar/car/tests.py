@@ -3,8 +3,8 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
-from .models import Car
-from .forms import NewUserForm
+from .models import Car, Refuel
+from .forms import NewUserForm, NewRefuelForm
 
 class YourCarViewsTestCase(TestCase):
 
@@ -13,6 +13,12 @@ class YourCarViewsTestCase(TestCase):
     def setUp(self):
         self.user1_password = 'chuck'
         self.user1 = User.objects.create_user(username='Chuck', password=self.user1_password)
+
+        self.user2_password = 'johndoe'
+        self.user2 = User.objects.create_user(username='john', password=self.user1_password)
+
+        self.car = Car.objects.create(owner=self.user1, car_model="Gol", color="Vermelho"
+                                      , year=2010, mileage=10000, name="Golzao")
 
     def test_signup_get_view(self):
         """ Test if the signup view respond correctly when using GET method """
@@ -305,3 +311,149 @@ class YourCarViewsTestCase(TestCase):
         except:
             car = False
         self.assertNotEqual(False, car)
+
+    def test_new_refuel_view_get(self):
+
+        # Log in with user 1
+        logged = self.client.login(username=self.user1.username, password=self.user1_password)
+
+        url_to_test = reverse('new_refuel', kwargs={'car_id': self.car.pk})
+
+        response = self.client.get(url_to_test, follow=True)
+        self.assertEqual(response.status_code, self.RESPONSE_OK)
+
+        # Check if the new refuel form is present
+        self.assertEqual(str(NewRefuelForm()), str(response.context['form']))
+
+    def test_new_valid_refuel_view_post(self):
+
+        # Log in with user1
+        logged = self.client.login(username=self.user1.username, password=self.user1_password)
+
+        url_to_test = reverse('new_refuel', kwargs={'car_id': self.car.pk})
+
+        post_data = {
+            'car': self.car.pk,
+            'date': "06/25/2016",
+            'liters': "10",
+            'fuel_price': "3.65",
+            'mileage': "30100",
+            'fuel_type': _("Alcohol")
+        }
+
+        response = self.client.post(url_to_test, post_data, follow=True)
+        self.assertEqual(response.status_code, self.RESPONSE_OK)
+
+        try:
+            refuel = Refuel.objects.get(car=self.car.pk)
+        except:
+            refuel = False
+        self.assertNotEqual(False, refuel)
+
+    def test_new_refuel_view_post_with_invalid_date(self):
+
+        # Log in with user1
+        logged = self.client.login(username=self.user1.username, password=self.user1_password)
+
+        url_to_test = reverse('new_refuel', kwargs={'car_id': self.car.pk})
+
+        post_data = {
+            'car': self.car.pk,
+            'date': "25/06/2016",
+            'liters': "10",
+            'fuel_price': "3.65",
+            'mileage': "30100",
+            'fuel_type': _("Alcohol")
+        }
+
+        response = self.client.post(url_to_test, post_data, follow=True)
+        self.assertEqual(response.status_code, self.RESPONSE_OK)
+
+        self.assertFormError(response, 'form', 'date', [_('Enter a valid date.')])
+
+        try:
+            refuel = Refuel.objects.get(car=self.car.pk)
+        except:
+            refuel = False
+        self.assertEqual(False, refuel)
+
+    def test_new_refuel_view_post_with_invalid_liters(self):
+
+        # Log in with user1
+        logged = self.client.login(username=self.user1.username, password=self.user1_password)
+
+        url_to_test = reverse('new_refuel', kwargs={'car_id': self.car.pk})
+
+        post_data = {
+            'car': self.car.pk,
+            'date': "06/25/2016",
+            'liters': "-1",
+            'fuel_price': "3.65",
+            'mileage': "30100",
+            'fuel_type': _("Alcohol")
+        }
+
+        response = self.client.post(url_to_test, post_data, follow=True)
+        self.assertEqual(response.status_code, self.RESPONSE_OK)
+
+        self.assertFormError(response, 'form', 'liters', [_('Ensure this value is greater than or equal to 0.')])
+
+        try:
+            refuel = Refuel.objects.get(car=self.car.pk)
+        except:
+            refuel = False
+        self.assertEqual(False, refuel)
+
+    def test_new_refuel_view_post_with_invalid_fuel_price(self):
+
+        # Log in with user1
+        logged = self.client.login(username=self.user1.username, password=self.user1_password)
+
+        url_to_test = reverse('new_refuel', kwargs={'car_id': self.car.pk})
+
+        post_data = {
+            'car': self.car.pk,
+            'date': "06/25/2016",
+            'liters': "10",
+            'fuel_price': "-1",
+            'mileage': "30100",
+            'fuel_type': _("Alcohol")
+        }
+
+        response = self.client.post(url_to_test, post_data, follow=True)
+        self.assertEqual(response.status_code, self.RESPONSE_OK)
+
+        self.assertFormError(response, 'form', 'fuel_price', [_('Ensure this value is greater than or equal to 0.')])
+
+        try:
+            refuel = Refuel.objects.get(car=self.car.pk)
+        except:
+            refuel = False
+        self.assertEqual(False, refuel)
+
+    def test_new_refuel_view_post_with_invalid_mileage(self):
+
+        # Log in with user1
+        logged = self.client.login(username=self.user1.username, password=self.user1_password)
+
+        url_to_test = reverse('new_refuel', kwargs={'car_id': self.car.pk})
+
+        post_data = {
+            'car': self.car.pk,
+            'date': "06/25/2016",
+            'liters': "10",
+            'fuel_price': "3.65",
+            'mileage': "-1",
+            'fuel_type': _("Alcohol")
+        }
+
+        response = self.client.post(url_to_test, post_data, follow=True)
+        self.assertEqual(response.status_code, self.RESPONSE_OK)
+
+        self.assertFormError(response, 'form', 'mileage', [_('Ensure this value is greater than or equal to 0.')])
+
+        try:
+            refuel = Refuel.objects.get(car=self.car.pk)
+        except:
+            refuel = False
+        self.assertEqual(False, refuel)
