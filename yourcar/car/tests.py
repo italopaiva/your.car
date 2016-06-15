@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from .models import Car, Refuel
-from .forms import NewUserForm, NewRefuelForm
+from .forms import NewUserForm, NewRefuelForm, CreateCarForm
 
 class YourCarViewsTestCase(TestCase):
 
@@ -26,6 +26,33 @@ class YourCarViewsTestCase(TestCase):
 
         self.car2_refuel = Refuel.objects.create(car=self.car2, liters=50, fuel_price=3.54, fuel_type=_('Alcohol')
                                                 , mileage=110000, date="2016-06-24")
+
+    def test_car_list_view(self):
+
+        # Log in with user1
+        logged = self.client.login(username=self.user1.username, password=self.user1_password)
+
+        url_to_test = reverse('cars')
+
+        response = self.client.get(url_to_test, follow=True)
+        self.assertEqual(response.status_code, self.RESPONSE_OK)
+
+        # Check if the new car form is present
+        self.assertEqual(str(CreateCarForm()), str(response.context['form']))
+
+    def test_refuels_list(self):
+        # Log in with user1
+        logged = self.client.login(username=self.user1.username, password=self.user1_password)
+
+        url_to_test = reverse('car_refuels', kwargs={'car_id': self.car.pk})
+
+        response = self.client.get(url_to_test, follow=True)
+        self.assertEqual(response.status_code, self.RESPONSE_OK)
+
+        refuels = Refuel.objects.filter(car=self.car.pk)
+
+        # Check if the car refuels is present
+        self.assertEqual(str(refuels), str(response.context['refuels']))
 
     def test_signup_get_view(self):
         """ Test if the signup view respond correctly when using GET method """
