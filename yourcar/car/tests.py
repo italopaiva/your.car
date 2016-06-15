@@ -9,6 +9,7 @@ from .forms import NewUserForm, NewRefuelForm
 class YourCarViewsTestCase(TestCase):
 
     RESPONSE_OK = 200
+    RESPONSE_404 = 404
 
     def setUp(self):
         self.user1_password = 'chuck'
@@ -19,6 +20,12 @@ class YourCarViewsTestCase(TestCase):
 
         self.car = Car.objects.create(owner=self.user1, car_model="Gol", color="Vermelho"
                                       , year=2010, mileage=10000, name="Golzao")
+
+        self.car2 = Car.objects.create(owner=self.user2, car_model="Vectra", color="Prata"
+                                      , year=2005, mileage=100000, name="Vectrao")
+
+        self.car2_refuel = Refuel.objects.create(car=self.car2, liters=50, fuel_price=3.54, fuel_type=_('Alcohol')
+                                                , mileage=110000, date="2016-06-24")
 
     def test_signup_get_view(self):
         """ Test if the signup view respond correctly when using GET method """
@@ -457,3 +464,29 @@ class YourCarViewsTestCase(TestCase):
         except:
             refuel = False
         self.assertEqual(False, refuel)
+
+    def test_delete_refuel_view(self):
+
+        # Log in with user2
+        logged = self.client.login(username=self.user2.username, password=self.user2_password)
+
+        url_to_test = reverse('delete_refuel', kwargs={'refuel_id': self.car2_refuel.pk})
+
+        response = self.client.post(url_to_test, follow=True)
+        self.assertEqual(response.status_code, self.RESPONSE_OK)
+
+        try:
+            refuel = Refuel.objects.get(car=self.car2_refuel.pk)
+        except:
+            refuel = False
+        self.assertEqual(False, refuel)
+
+    def test_delete_refuel_of_another_user(self):
+
+        # Log in with user1
+        logged = self.client.login(username=self.user1.username, password=self.user1_password)
+
+        url_to_test = reverse('delete_refuel', kwargs={'refuel_id': self.car2_refuel.pk})
+
+        response = self.client.post(url_to_test, follow=True)
+        self.assertEqual(response.status_code, self.RESPONSE_404)
