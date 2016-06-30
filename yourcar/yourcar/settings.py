@@ -37,9 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'bootstrap_ui',
     'bootstrap3',
     'car',
+    'telegrambot',
+    'rest_framework'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -74,7 +77,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'yourcar.wsgi.application'
 
 
-# Database
+# 'Database'
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 DATABASES = {
@@ -135,3 +138,7 @@ MESSAGE_TAGS = {
 
 # Bootstrap theme
 DJANGO_BOOTSTRAP_UI_THEME = 'bootswatch-cosmo'
+
+SITE_ID = 2
+
+TELEGRAM_BOT_HANDLERS_CONF = "car.handlers"

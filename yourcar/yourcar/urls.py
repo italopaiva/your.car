@@ -27,4 +27,5 @@ urlpatterns = [
     url(r'^logout', auth_views.logout, {'next_page': 'home'}, "logout"),
     url(r'^signup', car_views.SignUpView.as_view(), name="signup"),
     url(r'^car/', include('car.urls')),
+    url(r'^telegrambot/', include('telegrambot.urls', namespace="telegrambot"))
 ]
