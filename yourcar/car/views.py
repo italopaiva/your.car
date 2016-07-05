@@ -10,6 +10,43 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext, ugettext_lazy as _
 from car.forms import CreateCarForm, NewUserForm, NewRefuelForm
 from car.models import Car, Refuel, OilChange
+from django.core.exceptions import ObjectDoesNotExist
+import requests
+import json
+
+
+class BotView(View):
+    
+    bot_token = '257906616:AAF5IAAm65BtHGK8RHYXw0qSXNnKartFFeQ'
+
+    def handle(self, cmd, chat_id):
+        print('In handle: %s' % cmd)
+        cmd_and_args = cmd.split(' ')
+        command = cmd_and_args[0]
+        print('command: %s' % command)
+        print(cmd_and_args)
+        if command == '/start':
+            try:
+                username = cmd_and_args[1]
+                try:
+                    user = User.objects.get(username=username)
+                    text = 'Olá %s, bem-vindo ao your.car Bot!' % username
+                except ObjectDoesNotExist:
+                    text = 'This user is not registered in Your.car'
+            except IndexError:
+                text = 'It seems that you forgot to tell us your username...'
+            
+            post_data = {'text': text, 'chat_id': chat_id }
+            requests.post('https://api.telegram.org/bot%s/sendMessage' % self.bot_token, data=post_data)
+
+    def post(self, request):
+       msg = json.loads((request.body).decode('UTF-8'))
+       print(msg)
+       msg = msg['message']
+       chat_id = msg['chat']['id']
+       command = msg['text']
+       self.handle(command, chat_id)
+       return HttpResponse('OK')
 
 def home(request):
     context = {

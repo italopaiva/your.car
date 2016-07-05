@@ -106,3 +106,8 @@ class Refuel(models.Model):
 
     def __str__(self):
         return _("Refuel") + " " + str(self.date) + " - " + str(self.mileage) + " Km"
+
+class UserBotConversation(models.Model):
+
+    user = models.ForeignKey(User, verbose_name=_('Owner'))
+    chat = models.BigIntegerField()

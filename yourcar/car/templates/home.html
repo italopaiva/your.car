@@ -31,21 +31,28 @@
 <br>
 
 {% row %}
-  {% column xs="4" %}
-  {% endcolumn %}
-  {% column xs="4" %}
       {% if not user.is_authenticated %}
-        <a class="btn btn-default btn-lg btn-block" href="/login">
-        <b>{% trans 'GET STARTED!' %}<b>
-        </a>
+        {% column md="4" sm="2" %}
+        {% endcolumn %}
+        {% column md="4" sm="2" %}
+          <a class="btn btn-default btn-lg btn-block" href="/login">
+          <b>{% trans 'GET STARTED!' %}<b>
+          </a>
+        {% endcolumn %}
+        {% column md="4" sm="2" %}
+        {% endcolumn %}
       {% else %}
+        {% column md="6" sm="4" %}
         <button type="button" class="btn btn-default btn-lg btn-block" data-toggle="modal" data-target="#new_car_form">
           <b>{% trans 'GET STARTED!' %}<b>
         </button>
+        {% endcolumn %}
+        {% column md="6" sm="4" %}
+          <a class="btn btn-primary btn-lg btn-block" href="https://telegram.me/YourCarBot?start={{ user.username }}">
+            <i class='fa fa-paper-plane-o'></i> {% trans 'GET STARTED with our Telegram Bot!' %}
+          </a>
+        {% endcolumn %}
       {% endif %}
-  {% endcolumn %}
-  {% column xs="4" %}
-  {% endcolumn %}
 {% endrow %}
 
 {% if user.is_authenticated %}
