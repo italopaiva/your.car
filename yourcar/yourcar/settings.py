@@ -135,3 +135,6 @@ MESSAGE_TAGS = {
 
 # Bootstrap theme
 DJANGO_BOOTSTRAP_UI_THEME = 'bootswatch-cosmo'
+
+# Telegram Bot Token
+BOT_TOKEN = '257906616:AAF5IAAm65BtHGK8RHYXw0qSXNnKartFFeQ'

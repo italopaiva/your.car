@@ -1,75 +1,108 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic import View
 from django.template.response import TemplateResponse
+from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext, ugettext_lazy as _
 from car.forms import CreateCarForm, NewUserForm, NewRefuelForm
 from car.models import Car, Refuel, OilChange, UserBotConversation
-from django.core.exceptions import ObjectDoesNotExist
 import requests
 import json
 
+def send_message(message):
+    requests.post('https://api.telegram.org/bot%s/sendMessage' % settings.BOT_TOKEN, data=message)
 
-class BotView(View):
+class StartCommand:
+    NUM_OF_ARGS = 1
 
-    bot_token = '257906616:AAF5IAAm65BtHGK8RHYXw0qSXNnKartFFeQ'
-
-    def handle(self, cmd, chat_id):
-        cmd_and_args = cmd.split(' ')
-        command = cmd_and_args[0]
-        post_data = {}
-        post_data['chat_id'] = chat_id
-        if command == '/start':
+    def handle(self, cmd_and_args, chat_id):
+        try:
+            username = cmd_and_args[1]
             try:
-                username = cmd_and_args[1]
-                try:
-                    user = User.objects.get(username=username)
-                    UserBotConversation.objects.update_or_create(user=user, chat=chat_id) # Save the user chat_id
-                    text = 'Hello %s, welcome to your.car Bot!' % username
-                except ObjectDoesNotExist:
-                    text = 'This user is not registered in Your.car'
-            except IndexError:
-                text = 'It seems that you forgot to tell us your username...'
+                user = User.objects.get(username=username)
+                UserBotConversation.objects.update_or_create(user=user, chat=chat_id) # Save the user chat_id
+                text = 'Hello %s, welcome to your.car Bot!' % username
+            except ObjectDoesNotExist:
+                text = 'This user is not registered in Your.car'
+        except IndexError:
+            text = 'It seems that you forgot to tell us your username...'
 
-            post_data['text'] = text
-            self.__send_message(post_data)
-        elif command == '/newrefuel':
-            NUM_OF_ARGS = 7 # This command needs 7 arguments
-            if len(cmd_and_args) is NUM_OF_ARGS:
-                try:
+        message = {'chat_id': chat_id, 'text':  text}
+        send_message(message)
 
-                    user_conversation = UserBotConversation.objects.get(chat=chat_id)
-                    user_cars = Car.objects.filter(owner=user_conversation.user)
-                    car_to_refuel = cmd_and_args[1]
+class NewRefuelCommand:
+    NUM_OF_ARGS = 6 # This command needs this much arguments
 
-                    if(self.car_exists(user_cars, car_to_refuel)):
-                        post_data['text'] = 'Car refueled!'
+    def handle(self, cmd_and_args, chat_id):
+        print("Chegou na classe NewRefuelCommand")
+        message = {'chat_id': chat_id}
+        if len(cmd_and_args) is self.NUM_OF_ARGS:
+            print("Quantity of args ok!")
+            try:
+                user_conversation = UserBotConversation.objects.get(chat=chat_id)
+                user_cars = Car.objects.filter(owner=user_conversation.user)
+                car_to_refuel = cmd_and_args[1]
+
+                exists, car = self.car_exists(user_cars, car_to_refuel)
+                if exists:
+                    refuel = Refuel(car=car, fuel_type=Refuel.REGULAR_GAS)
+                    new_refuel = {
+                        'mileage': cmd_and_args[2],
+                        'date': cmd_and_args[3],
+                        'liters': cmd_and_args[4],
+                        'fuel_price': cmd_and_args[5],
+                        'fuel_type': Refuel.REGULAR_GAS
+                    }
+                    form = NewRefuelForm(data=new_refuel, instance=refuel)
+                    if form.is_valid():
+                        form.save()
+                        message['text'] = '%s refuel noted!' % car_to_refuel
+                    else:
+                        msg = 'Something went wrong. Check our data about it: \n'
+                        for field, error in form.errors.items():
+                            msg = msg + field + " - " + repr(error) + "/n"
+                        message['text'] = msg
+                else:
+                    if not user_cars:
+                        msg = 'You have no cars on your.car account. Register one there, is easy!'
                     else:
                         msg = 'This car does not exists on your account. Check your.cars: \n'
                         for car in user_cars:
                             msg = msg + ' - ' + str(car) + '\n'
-                        post_data['text'] = msg
-                except ObjectDoesNotExist:
-                    post_data['text'] = 'User not found. Tell us your your.car login on /start command first. Like: /start username .'
-            else:
-                post_data['text'] = 'Use newrefuel command like this: /newrefuel car date liters price mileage fuel_type'
-            self.__send_message(post_data)
+                    message['text'] = msg
+            except ObjectDoesNotExist:
+                message['text'] = 'User not found. Tell us your your.car login on /start command first. Like: /start username .'
+        else:
+            print("Quantity of args not ok!")
+            message['text'] = 'Use newrefuel command like this: /newrefuel car mileage date liters price'
+        send_message(message)
 
     def car_exists(self, user_cars, car_to_check):
         there_is_car = False
+        found_car = None
         for car in user_cars:
             if str(car) == car_to_check:
                 there_is_car = True
+                found_car = car
                 break
-        return there_is_car
+        return there_is_car, found_car
 
-    def __send_message(self, message):
-      requests.post('https://api.telegram.org/bot%s/sendMessage' % self.bot_token, data=message)
+class BotView(View):
+
+    def handle(self, cmd, chat_id):
+        cmd_and_args = cmd.split(' ')
+        command = cmd_and_args[0]
+        if command == '/start':
+            StartCommand().handle(cmd_and_args, chat_id)
+        elif command == '/newrefuel':
+            print("arrive in new refuel in bot view")
+            NewRefuelCommand().handle(cmd_and_args, chat_id)
 
     def post(self, request):
        msg = json.loads((request.body).decode('UTF-8'))

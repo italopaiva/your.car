@@ -109,5 +109,5 @@ class Refuel(models.Model):
 
 class UserBotConversation(models.Model):
 
-    user = models.ForeignKey(User, verbose_name=_('Owner'))
+    user = models.ForeignKey(User, verbose_name=_('User'))
     chat = models.BigIntegerField(unique=True)
