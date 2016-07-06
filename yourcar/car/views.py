@@ -9,35 +9,67 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext, ugettext_lazy as _
 from car.forms import CreateCarForm, NewUserForm, NewRefuelForm
-from car.models import Car, Refuel, OilChange
+from car.models import Car, Refuel, OilChange, UserBotConversation
 from django.core.exceptions import ObjectDoesNotExist
 import requests
 import json
 
 
 class BotView(View):
-    
+
     bot_token = '257906616:AAF5IAAm65BtHGK8RHYXw0qSXNnKartFFeQ'
 
     def handle(self, cmd, chat_id):
-        print('In handle: %s' % cmd)
         cmd_and_args = cmd.split(' ')
         command = cmd_and_args[0]
-        print('command: %s' % command)
-        print(cmd_and_args)
+        post_data = {}
+        post_data['chat_id'] = chat_id
         if command == '/start':
             try:
                 username = cmd_and_args[1]
                 try:
                     user = User.objects.get(username=username)
-                    text = 'Olá %s, bem-vindo ao your.car Bot!' % username
+                    UserBotConversation.objects.update_or_create(user=user, chat=chat_id) # Save the user chat_id
+                    text = 'Hello %s, welcome to your.car Bot!' % username
                 except ObjectDoesNotExist:
                     text = 'This user is not registered in Your.car'
             except IndexError:
                 text = 'It seems that you forgot to tell us your username...'
-            
-            post_data = {'text': text, 'chat_id': chat_id }
-            requests.post('https://api.telegram.org/bot%s/sendMessage' % self.bot_token, data=post_data)
+
+            post_data['text'] = text
+            self.__send_message(post_data)
+        elif command == '/newrefuel':
+            NUM_OF_ARGS = 7 # This command needs 7 arguments
+            if len(cmd_and_args) is NUM_OF_ARGS:
+                try:
+
+                    user_conversation = UserBotConversation.objects.get(chat=chat_id)
+                    user_cars = Car.objects.filter(owner=user_conversation.user)
+                    car_to_refuel = cmd_and_args[1]
+
+                    if(self.car_exists(user_cars, car_to_refuel)):
+                        post_data['text'] = 'Car refueled!'
+                    else:
+                        msg = 'This car does not exists on your account. Check your.cars: \n'
+                        for car in user_cars:
+                            msg = msg + ' - ' + str(car) + '\n'
+                        post_data['text'] = msg
+                except ObjectDoesNotExist:
+                    post_data['text'] = 'User not found. Tell us your your.car login on /start command first. Like: /start username .'
+            else:
+                post_data['text'] = 'Use newrefuel command like this: /newrefuel car date liters price mileage fuel_type'
+            self.__send_message(post_data)
+
+    def car_exists(self, user_cars, car_to_check):
+        there_is_car = False
+        for car in user_cars:
+            if str(car) == car_to_check:
+                there_is_car = True
+                break
+        return there_is_car
+
+    def __send_message(self, message):
+      requests.post('https://api.telegram.org/bot%s/sendMessage' % self.bot_token, data=message)
 
     def post(self, request):
        msg = json.loads((request.body).decode('UTF-8'))
@@ -79,7 +111,7 @@ class SignUpView(View):
         return response
 
 class NewCarView(View):
-    
+
     form = CreateCarForm
 
     @method_decorator(login_required)
@@ -109,7 +141,7 @@ class NewCarView(View):
         return response
 
 class NewRefuelView(View):
-    
+
     form = NewRefuelForm
 
     @method_decorator(login_required)
@@ -148,7 +180,7 @@ class DeleteRefuelView(View):
             refuel_car = refuel.car
             refuel.delete()
             messages.add_message(request, messages.SUCCESS, _("Refuel deleted successfuly!"))
-            response = HttpResponseRedirect(reverse('car_refuels', 
+            response = HttpResponseRedirect(reverse('car_refuels',
                                             kwargs={'car_id': refuel_car.pk}))
             return response
         else:
