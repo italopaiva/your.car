@@ -2,6 +2,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from telegram_bot.models import UserBotConversation
 from telegram_bot.views import send_message
+from car.models import Car, Refuel
+from car.forms import NewRefuelForm
 
 class StartCommand:
 
@@ -26,7 +28,19 @@ class StartCommand:
         message = {'chat_id': chat_id, 'text':  text}
         send_message(message)
 
+class HelpCommand:
+
+    NUM_OF_ARGS = 0
+
+    def handle(self, cmd_and_args, chat_id):
+        help_text = 'Welcome to Your.Car Bot! This is what you can do by now with me: \n\n'
+        help_text += '/newrefuel - Register a new refuel for one of your.cars. Use it like this:\n'
+        help_text += '\t/newrefuel car mileage date liters price'
+        message = {'chat_id': chat_id, 'text': help_text}
+        send_message(message)
+
 class NewRefuelCommand:
+
     NUM_OF_ARGS = 6 # This command needs this much arguments
 
     def handle(self, cmd_and_args, chat_id):
@@ -56,7 +70,7 @@ class NewRefuelCommand:
                     else:
                         msg = 'Something went wrong. Check our data about it: \n'
                         for field, error in form.errors.items():
-                            msg = msg + field + " - " + repr(error) + "/n"
+                            msg = msg + field + " - " + repr(error) + "\n"
                         message['text'] = msg
                 else:
                     if not user_cars:
