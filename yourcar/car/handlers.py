@@ -1,5 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
-from .models import UserBotConversation
+from django.contrib.auth.models import User
+from telegram_bot.models import UserBotConversation
 from telegram_bot.views import send_message
 
 class StartCommand:
@@ -7,6 +8,10 @@ class StartCommand:
     NUM_OF_ARGS = 1
 
     def handle(self, cmd_and_args, chat_id):
+        print(chat_id)
+        print('Chegou no comando start')
+        print(cmd_and_args)
+        print(chat_id)
         try:
             username = cmd_and_args[1]
             try:
