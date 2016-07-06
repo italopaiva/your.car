@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'bootstrap_ui',
     'bootstrap3',
     'car',
+    'telegram_bot'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -138,3 +139,5 @@ DJANGO_BOOTSTRAP_UI_THEME = 'bootswatch-cosmo'
 
 # Telegram Bot Token
 BOT_TOKEN = '257906616:AAF5IAAm65BtHGK8RHYXw0qSXNnKartFFeQ'
+
+BOT_HANDLERS_MODULE = 'car.handlers'

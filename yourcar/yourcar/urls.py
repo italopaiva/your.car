@@ -19,6 +19,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.generic import RedirectView
 from car import views as car_views
+from telegram_bot import views as bot_views
 
 urlpatterns = [
     url(r'^$', RedirectView.as_view(url=settings.YOUR_CAR_HOME), name='home'),
@@ -27,5 +28,5 @@ urlpatterns = [
     url(r'^logout', auth_views.logout, {'next_page': 'home'}, "logout"),
     url(r'^signup', car_views.SignUpView.as_view(), name="signup"),
     url(r'^car/', include('car.urls')),
-    url(r'^bot$', car_views.BotView.as_view()),
+    url(r'^bot$', bot_views.BotFacade.as_view()),
 ]

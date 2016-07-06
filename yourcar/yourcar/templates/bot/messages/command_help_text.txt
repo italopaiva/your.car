@@ -1,2 +1,0 @@
-
-This is the help command of YourCarBot!
