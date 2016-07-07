@@ -86,7 +86,6 @@ class NewRefuelView(View):
 
     @method_decorator(login_required)
     def post(self, request, car_id):
-        #post_save.connect(notify_new_refuel_in_telegram, sender=Refuel)
         car = Car.objects.get(pk=car_id)
         refuel = Refuel(car=car)
         form = self.form(data=request.POST, instance=refuel)
@@ -175,7 +174,6 @@ def refuels(request, car_id):
     car = Car.objects.get(pk=car_id)
     refuels = Refuel.objects.filter(car=car_id)
     context = {'refuels': refuels, 'car': car}
-    #signals.car_refuel_expense.connect(notify_expense_in_telegram)
     return TemplateResponse(request, "car/car_refuels.html", context)
 
 @login_required

@@ -4,6 +4,7 @@ from telegram_bot.models import UserBotConversation
 from telegram_bot.views import send_message
 from car.models import Car, Refuel
 from car.forms import NewRefuelForm
+from car import signals
 
 class StartCommand:
 
@@ -66,6 +67,7 @@ class NewRefuelCommand:
                     form = NewRefuelForm(data=new_refuel, instance=refuel)
                     if form.is_valid():
                         form.save()
+                        self.check_car_expense(car)
                         message['text'] = '%s refuel noted!' % car_to_refuel
                     else:
                         msg = 'Something went wrong. Check our data about it: \n'
@@ -96,6 +98,11 @@ class NewRefuelCommand:
                 found_car = car
                 break
         return there_is_car, found_car
+
+    def check_car_expense(self, car):
+        expense = car.refuel_expense
+        if expense >= 1000:
+            signals.car_refuel_expense.send(sender=Car, car=car)
 
 # Beyond the commons /help and /start
 SUPPORTED_COMMANDS = {

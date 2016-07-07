@@ -36,7 +36,7 @@ def notify_expense_in_telegram(sender, car, **kwargs):
         # So, no need to notify
         pass
     else:
-        msg = 'You already spent $%s in %s, keep your eyes open and your wallet closed.' % (str(expense), str(car))
+        msg = 'You already spent $%s with refuels in %s, keep your eyes open and your wallet closed!' % (str(expense), str(car))
         chat_id = conversation.chat
         message = {'chat_id': chat_id, 'text': msg}
         send_message(message)
