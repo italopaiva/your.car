@@ -11,8 +11,8 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext, ugettext_lazy as _
 from car.forms import CreateCarForm, NewUserForm, NewRefuelForm
 from car.models import Car, Refuel, OilChange
-from car.signals_handlers import notify_in_telegram
-
+from car.signals_handlers import notify_new_refuel_in_telegram, notify_expense_in_telegram
+from . import signals
 
 def home(request):
     context = {
@@ -86,7 +86,7 @@ class NewRefuelView(View):
 
     @method_decorator(login_required)
     def post(self, request, car_id):
-        post_save.connect(notify_in_telegram, sender=Refuel)
+        #post_save.connect(notify_new_refuel_in_telegram, sender=Refuel)
         car = Car.objects.get(pk=car_id)
         refuel = Refuel(car=car)
         form = self.form(data=request.POST, instance=refuel)
@@ -102,8 +102,15 @@ class NewRefuelView(View):
             msg = _('Something is wrong. Please, check the data you\'ve informed.')
 
         messages.add_message(request, msg_level, msg)
+        self.check_car_expense(car)
         return response
 
+    def check_car_expense(self, car):
+        expense = car.refuel_expense
+        print('Expense in this car:')
+        print(expense)
+        if expense >= 1000:
+            signals.car_refuel_expense.send(sender=Car, car=car)
 
 class DeleteRefuelView(View):
     http_method_names = [u'post']
@@ -160,6 +167,7 @@ class UpdateRefuelView(View):
 def cars(request):
     cars = Car.objects.filter(owner=request.user)
     context = {'cars': cars, 'form': CreateCarForm()}
+
     return TemplateResponse(request, "car/car_list.html", context)
 
 @login_required
@@ -167,6 +175,7 @@ def refuels(request, car_id):
     car = Car.objects.get(pk=car_id)
     refuels = Refuel.objects.filter(car=car_id)
     context = {'refuels': refuels, 'car': car}
+    #signals.car_refuel_expense.connect(notify_expense_in_telegram)
     return TemplateResponse(request, "car/car_refuels.html", context)
 
 @login_required
